@@ -1,0 +1,22 @@
+---
+abstract: 'Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html'
+author:
+  - 'Glenn Fowler <cebjyre@cpan.org>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.31
+generated_by: 'Dist::Zilla version 2.100922'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Net-Google-FederatedLogin
+recommends: {}
+requires:
+  Carp: 0
+  LWP::UserAgent: 0
+  Moose: 0
+  URI::Escape: 0
+  XML::Twig: 0
+version: 0.0.1
