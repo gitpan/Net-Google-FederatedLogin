@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.0.1';
+  $Net::Google::FederatedLogin::VERSION = '0.0.2';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -159,13 +159,13 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.0.1
+version 0.0.2
 
 =head1 ATTRIBUTES
 
 =head2 claimed_id
 
-B<Required for L<get_auth_url>:> The email address, or an OpenID URL of the identity to be checked.
+B<Required for L<"get_auth_url">:> The email address, or an OpenID URL of the identity to be checked.
 
 =head2 ua
 
@@ -175,12 +175,12 @@ will be instantiated.
 
 =head2 return_to
 
-B<Required for L<get_auth_url> and L<verify_auth>:> The URL
+B<Required for L<"get_auth_url"> and L<"verify_auth">:> The URL
 the user should be returned to after verifying their identity.
 
 =head2 cgi
 
-B<Required for L<verify_auth>:> A CGI object that is used to
+B<Required for L<"verify_auth">:> A CGI object that is used to
 access the parameters that assert the identity has been verified.
 
 =head1 METHODS
@@ -191,7 +191,7 @@ Gets the URL to send the user to where they can verify their identity.
 
 =head2 verify_auth
 
-Checks if the user has been validated based on the parameters in the L<cgi> object,
+Checks if the user has been validated based on the parameters in the L<"cgi"> object,
 and checks that these parameters do come from the correct OpenID provider (rather
 than having been hand-crafted to appear to validate the identity).
 

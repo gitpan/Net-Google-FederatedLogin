@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
                                            },
                        'ABSTRACT' => 'Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html',
                        'EXE_FILES' => [],
-                       'VERSION' => '0.0.1',
+                       'VERSION' => '0.0.2',
                        'PREREQ_PM' => {
                                         'LWP::UserAgent' => '0',
                                         'XML::Twig' => '0',

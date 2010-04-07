@@ -6,7 +6,7 @@ build_requires:
   Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.31
-generated_by: 'Dist::Zilla version 2.100922'
+generated_by: 'Dist::Zilla version 2.100960'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,4 +19,6 @@ requires:
   Moose: 0
   URI::Escape: 0
   XML::Twig: 0
-version: 0.0.1
+resources:
+  repository: http://github.com/cebjyre/Net-Google-FederatedLogin
+version: 0.0.2
