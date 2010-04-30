@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.0.2';
+  $Net::Google::FederatedLogin::VERSION = '0.1.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -9,8 +9,6 @@ use Moose;
 use LWP::UserAgent;
 use Carp;
 use URI::Escape;
-
-my $DEFAULT_DISCOVERY_URL = 'https://www.google.com/accounts/o8/id';
 
 
 has claimed_id    => (
@@ -39,49 +37,53 @@ has cgi => (
     isa => 'CGI',
 );
 
-has _open_id_endpoint   => (
-    is  => 'rw',
-    isa => 'Str',
-);
-
 
 sub get_auth_url {
     my $self = shift;
     
-    my $endpoint = $self->_open_id_endpoint;
-    unless($endpoint) {
-        $self->_perform_discovery;
-        $endpoint = $self->_open_id_endpoint;
-        croak 'No OpenID endpoint found.' unless $endpoint;
-    }
+    my $endpoint = $self->_get_open_id_endpoint;
     
+    #if the endpoint already contains params, put in a param separator ('&') otherwise start params ('?')
+    $endpoint .= ($endpoint =~ /\?/)
+        ? '&'
+        : '?';
     $endpoint .=  $self->_get_request_parameters;
     
     return $endpoint;
 }
 
-sub _perform_discovery {
+sub _get_open_id_endpoint {
     my $self = shift;
+    
     my $claimed_id = $self->claimed_id;
-    croak 'Claimed id not set (needs to be an email or OpenID url), unable to perform discovery' unless $claimed_id;
+    my $discoverer;
+    if($claimed_id =~ m{(\@gmail.com$)|(^https://www.google.com/accounts)}) {
+        require Net::Google::FederatedLogin::Gmail::Discoverer;
+        $discoverer = Net::Google::FederatedLogin::Gmail::Discoverer->new(ua => $self->ua)
+    } else {
+        require Net::Google::FederatedLogin::Apps::Discoverer;
+        my $app_domain;
+        my $is_id;
+        if($claimed_id =~ /\@(.*)/) {
+            $app_domain = $1;
+        } elsif($claimed_id =~ m{https?://([^/]+)}) {
+            $app_domain = $1;
+            $is_id = 1;
+        }
+        $discoverer = Net::Google::FederatedLogin::Apps::Discoverer->new(ua => $self->ua, app_domain => $app_domain);
+        $discoverer->claimed_id($claimed_id) if $is_id;
+    }
     
-    #TODO: Check whether it is a Google Apps account
-    my $ua = $self->ua;
-    my $response = $ua->get($DEFAULT_DISCOVERY_URL,
-        Accept => 'application/xrds+xml');
-    
-    require XML::Twig;
-    my $xt = XML::Twig->new(
-        twig_handlers => { URI => sub {$self->_open_id_endpoint($_->text)}},
-    );
-    $xt->parse($response->decoded_content);
+    my $endpoint = $discoverer->perform_discovery;
+    croak 'No OpenID endpoint found.' unless $endpoint;
+    return $endpoint;
 }
 
 sub _get_request_parameters {
     my $self = shift;
     
     croak 'No return_to address provided' unless $self->return_to;
-    my $params = '?openid.mode=checkid_setup'
+    my $params = 'openid.mode=checkid_setup'
         . '&openid.ns=http://specs.openid.net/auth/2.0'
         . '&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select'
         . '&openid.identity=http://specs.openid.net/auth/2.0/identifier_select'
@@ -112,12 +114,12 @@ sub verify_auth {
         carp "Identity from parameters ($param_claimed_id) is not the same as the previously set claimed identity ($claimed_id); using the parameter version.";
         $self->claimed_id($param_claimed_id);
     }
-    $self->_open_id_endpoint('');
-    $self->_perform_discovery;
     
-    my $verify_endpoint = $self->_open_id_endpoint;
-    croak 'Unable to verify auth, failed to determine endpoint' unless $verify_endpoint;
-    $verify_endpoint .= '?' . join '&',
+    my $verify_endpoint = $self->_get_open_id_endpoint;
+    $verify_endpoint .= ($verify_endpoint =~ /\?/)
+        ? '&'
+        : '?';
+    $verify_endpoint .= join '&',
         map {
             my $param = $_;
             my $val = $cgi->param($param);
@@ -159,7 +161,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.0.2
+version 0.1.0
 
 =head1 ATTRIBUTES
 

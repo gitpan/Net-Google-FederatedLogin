@@ -6,6 +6,11 @@ Makefile.PL
 README
 dist.ini
 lib/Net/Google/FederatedLogin.pm
+lib/Net/Google/FederatedLogin/Apps/Discoverer.pm
+lib/Net/Google/FederatedLogin/Gmail/Discoverer.pm
+lib/Net/Google/FederatedLogin/Role/Discoverer.pm
 t/create.t
+t/gmail.t
+t/hosted.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t

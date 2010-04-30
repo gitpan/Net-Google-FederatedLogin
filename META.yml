@@ -3,10 +3,12 @@ abstract: 'Google Federated Login module - see http://code.google.com/apis/accou
 author:
   - 'Glenn Fowler <cebjyre@cpan.org>'
 build_requires:
+  CGI: 0
+  Test::Mock::LWP: 0
   Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.31
-generated_by: 'Dist::Zilla version 2.100960'
+generated_by: 'Dist::Zilla version 2.101170'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -17,8 +19,9 @@ requires:
   Carp: 0
   LWP::UserAgent: 0
   Moose: 0
+  Moose::Role: 0
   URI::Escape: 0
   XML::Twig: 0
 resources:
   repository: http://github.com/cebjyre/Net-Google-FederatedLogin
-version: 0.0.2
+version: 0.1.0
