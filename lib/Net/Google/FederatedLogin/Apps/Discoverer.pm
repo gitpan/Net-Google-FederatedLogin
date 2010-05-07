@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Apps::Discoverer;
 BEGIN {
-  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.1.0';
+  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.2.0';
 }
 # ABSTRACT: Find the OpenID endpoint for apps domain accounts
 
@@ -113,7 +113,7 @@ Net::Google::FederatedLogin::Apps::Discoverer - Find the OpenID endpoint for app
 
 =head1 VERSION
 
-version 0.1.0
+version 0.2.0
 
 =head1 METHODS
 

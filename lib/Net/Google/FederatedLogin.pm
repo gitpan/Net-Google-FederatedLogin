@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.1.0';
+  $Net::Google::FederatedLogin::VERSION = '0.2.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -41,7 +41,7 @@ has cgi => (
 sub get_auth_url {
     my $self = shift;
     
-    my $endpoint = $self->_get_open_id_endpoint;
+    my $endpoint = $self->get_openid_endpoint;
     
     #if the endpoint already contains params, put in a param separator ('&') otherwise start params ('?')
     $endpoint .= ($endpoint =~ /\?/)
@@ -52,7 +52,8 @@ sub get_auth_url {
     return $endpoint;
 }
 
-sub _get_open_id_endpoint {
+
+sub get_openid_endpoint {
     my $self = shift;
     
     my $claimed_id = $self->claimed_id;
@@ -77,6 +78,13 @@ sub _get_open_id_endpoint {
     my $endpoint = $discoverer->perform_discovery;
     croak 'No OpenID endpoint found.' unless $endpoint;
     return $endpoint;
+}
+
+sub _get_open_id_endpoint {
+    my $self = shift;
+    
+    carp 'The _get_open_id_endpoint() method has been deprecated; use get_openid_endpoint() instead.';
+    return $self->get_openid_endpoint;
 }
 
 sub _get_request_parameters {
@@ -115,7 +123,7 @@ sub verify_auth {
         $self->claimed_id($param_claimed_id);
     }
     
-    my $verify_endpoint = $self->_get_open_id_endpoint;
+    my $verify_endpoint = $self->get_openid_endpoint;
     $verify_endpoint .= ($verify_endpoint =~ /\?/)
         ? '&'
         : '?';
@@ -161,7 +169,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.1.0
+version 0.2.0
 
 =head1 ATTRIBUTES
 
@@ -191,11 +199,17 @@ access the parameters that assert the identity has been verified.
 
 Gets the URL to send the user to where they can verify their identity.
 
+=head2 get_openid_endpoint
+
+Gets the unadorned OpenID authentication URL (like L<"get_auth_url">, but doesn't contain values specific to
+this request (return_to, mode etc))
+
 =head2 verify_auth
 
 Checks if the user has been validated based on the parameters in the L<"cgi"> object,
 and checks that these parameters do come from the correct OpenID provider (rather
-than having been hand-crafted to appear to validate the identity).
+than having been hand-crafted to appear to validate the identity). If the id is
+successfully verified, it is returned (otherwise a false value is returned).
 
 =head1 AUTHOR
 
