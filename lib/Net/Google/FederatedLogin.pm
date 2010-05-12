@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.2.0';
+  $Net::Google::FederatedLogin::VERSION = '0.3.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -58,7 +58,7 @@ sub get_openid_endpoint {
     
     my $claimed_id = $self->claimed_id;
     my $discoverer;
-    if($claimed_id =~ m{(\@gmail.com$)|(^https://www.google.com/accounts)}) {
+    if($claimed_id =~ m{((\@|^)gmail.com$)|(^https://www.google.com/accounts)}) {
         require Net::Google::FederatedLogin::Gmail::Discoverer;
         $discoverer = Net::Google::FederatedLogin::Gmail::Discoverer->new(ua => $self->ua)
     } else {
@@ -70,6 +70,8 @@ sub get_openid_endpoint {
         } elsif($claimed_id =~ m{https?://([^/]+)}) {
             $app_domain = $1;
             $is_id = 1;
+        } else {
+            $app_domain = $claimed_id;
         }
         $discoverer = Net::Google::FederatedLogin::Apps::Discoverer->new(ua => $self->ua, app_domain => $app_domain);
         $discoverer->claimed_id($claimed_id) if $is_id;
@@ -169,7 +171,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.2.0
+version 0.3.0
 
 =head1 ATTRIBUTES
 
