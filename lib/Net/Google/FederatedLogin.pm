@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.3.0';
+  $Net::Google::FederatedLogin::VERSION = '0.4.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -12,6 +12,12 @@ use URI::Escape;
 
 
 has claimed_id    => (
+    is  => 'rw',
+    isa => 'Str',
+);
+
+
+has realm   => (
     is  => 'rw',
     isa => 'Str',
 );
@@ -99,6 +105,10 @@ sub _get_request_parameters {
         . '&openid.identity=http://specs.openid.net/auth/2.0/identifier_select'
         . '&openid.return_to=' . $self->return_to;
     
+    if(my $realm = $self->realm) {
+        $params .= '&openid.realm='.$realm;
+    }
+    
     return $params;
 }
 
@@ -171,13 +181,19 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.3.0
+version 0.4.0
 
 =head1 ATTRIBUTES
 
 =head2 claimed_id
 
 B<Required for L<"get_auth_url">:> The email address, or an OpenID URL of the identity to be checked.
+
+=head2 realm
+
+Optional field that is used to populate the openid.realm parameter.
+If not provided the parameter will not be used (as opposed to being
+calculated from the L<"return_to">" value).
 
 =head2 ua
 
@@ -215,7 +231,7 @@ successfully verified, it is returned (otherwise a false value is returned).
 
 =head1 AUTHOR
 
-  Glenn Fowler <cebjyre@cpan.org>
+Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

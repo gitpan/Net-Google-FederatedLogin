@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Role::Discoverer;
 BEGIN {
-  $Net::Google::FederatedLogin::Role::Discoverer::VERSION = '0.3.0';
+  $Net::Google::FederatedLogin::Role::Discoverer::VERSION = '0.4.0';
 }
 # ABSTRACT: something that can find the OpenID endpoint
 
@@ -26,11 +26,11 @@ Net::Google::FederatedLogin::Role::Discoverer - something that can find the Open
 
 =head1 VERSION
 
-version 0.3.0
+version 0.4.0
 
 =head1 AUTHOR
 
-  Glenn Fowler <cebjyre@cpan.org>
+Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
