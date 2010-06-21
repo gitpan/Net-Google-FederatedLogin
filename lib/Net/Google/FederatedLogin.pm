@@ -1,14 +1,18 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.4.0';
+  $Net::Google::FederatedLogin::VERSION = '0.5.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
 use Moose;
+use Moose::Util::TypeConstraints;
 
 use LWP::UserAgent;
 use Carp;
 use URI::Escape;
+
+use Net::Google::FederatedLogin::Extension;
+use Net::Google::FederatedLogin::Types;
 
 
 has claimed_id    => (
@@ -41,6 +45,13 @@ has return_to   => (
 has cgi => (
     is  => 'rw',
     isa => 'CGI',
+);
+
+
+has extensions => (
+    is  => 'rw',
+    isa => 'Extension_List',
+    coerce  => 1,
 );
 
 
@@ -109,6 +120,11 @@ sub _get_request_parameters {
         $params .= '&openid.realm='.$realm;
     }
     
+    my $extensions = $self->extensions;
+    if($extensions && %$extensions) {
+        $params .= '&' . $_->get_parameter_string() foreach map {$extensions->{$_}} sort keys %$extensions;
+    }
+    
     return $params;
 }
 
@@ -166,6 +182,35 @@ sub _parse_direct_response {
     return \%data;
 }
 
+
+sub get_extension {
+    my $self = shift;
+    my $uri = shift;
+    
+    my $extension;
+    
+    my $extensions = $self->extensions;
+    if($extensions){
+        $extension = $extensions->{$uri};
+    }
+    
+    unless($extension) {
+        $extension = Net::Google::FederatedLogin::Extension->new(uri => $uri, cgi => $self->cgi);
+        $self->set_extension($extension) if $extension;
+    }
+    return $extension;
+}
+
+
+sub set_extension {
+    my $self = shift;
+    my $extension = shift;
+    
+    my $extensions = $self->extensions || {};
+    $extensions->{$extension->{uri}} = $extension;
+    $self->extensions($extensions);
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -181,7 +226,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.4.0
+version 0.5.0
 
 =head1 ATTRIBUTES
 
@@ -211,6 +256,10 @@ the user should be returned to after verifying their identity.
 B<Required for L<"verify_auth">:> A CGI object that is used to
 access the parameters that assert the identity has been verified.
 
+=head2 extensions
+
+Hashref of L<Net::Google::FederatedLogin::Extension> objects (keyed off the extension type URI).
+
 =head1 METHODS
 
 =head2 get_auth_url
@@ -228,6 +277,15 @@ Checks if the user has been validated based on the parameters in the L<"cgi"> ob
 and checks that these parameters do come from the correct OpenID provider (rather
 than having been hand-crafted to appear to validate the identity). If the id is
 successfully verified, it is returned (otherwise a false value is returned).
+
+=head2 get_extension
+
+Retrieve a single L<Net::Google::FederatedLogin::Extension> object, based on the type URI provided.
+This method is most likely to be useful for handling the response to an OpenID request.
+
+=head2 set_extension
+
+Save an extension into the list of extensions for this login object
 
 =head1 AUTHOR
 

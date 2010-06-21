@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 6;
 
 use CGI;
 
@@ -6,7 +6,29 @@ use Test::Mock::LWP;
 $Mock_ua->set_isa('LWP::UserAgent');
 
 use Net::Google::FederatedLogin;
-my $fl = Net::Google::FederatedLogin->new(claimed_id => 'example@example.com', return_to => 'http://example.com/return');
+my $fl = Net::Google::FederatedLogin->new(
+    claimed_id => 'example@example.com',
+    return_to => 'http://example.com/return',
+    extensions => [
+        {
+            ns          => 'ax',
+            uri         => 'http://openid.net/srv/ax/1.0',
+            attributes  => {
+                mode        => 'fetch_request',
+                required    => 'email',
+                type        => {
+                    email => 'http://axschema.org/contact/email'
+                }
+            }
+        },
+        {
+            ns          => 'other',
+            uri         => 'http://example.com/some_schema',
+            attributes  => {
+                argument    => 'value',
+            }
+        }
+    ]);
 
 my %update_mock_response = (
     'https://www.google.com/accounts/o8/.well-known/host-meta?hd=example.com'   => sub {
@@ -51,36 +73,6 @@ my %update_mock_response = (
   </XRD>
 </xrds:XRDS>}})
     },
-    'https://www.google.com/accounts/o8/user-xrds?uri=http%3A%2F%2Fexample.com%2Fopenid%3Fid%3D108441225163454056756' => sub {
-        $Mock_response->mock(decoded_content => sub {
-            return q{<?xml version="1.0" encoding="UTF-8"?>
-<xrds:XRDS xmlns:xrds="xri://$xrds" xmlns="xri://$xrd*($v*2.0)">
-  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-  <ds:SignedInfo>
-  <ds:CanonicalizationMethod Algorithm="http://docs.oasis-open.org/xri/xrd/2009/01#canonicalize-raw-octets" />
-  <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
-  </ds:SignedInfo>
-  <ds:KeyInfo>
-  <ds:X509Data>
-  <ds:X509Certificate>
-  MIICgjCC...KdA2EFA==
-  </ds:X509Certificate>
-  <ds:X509Certificate>
-  MIICsDCCAhmgA...dyLU=
-  </ds:X509Certificate>
-  </ds:X509Data>
-  </ds:KeyInfo>
-  </ds:Signature>
-  <XRD>
-  <CanonicalID>http://example.com/openid?id=108441225163454056756</CanonicalID>
-  <Service priority="0">
-  <Type>http://specs.openid.net/auth/2.0/signon</Type>
-  <Type>http://openid.net/srv/ax/1.0</Type>
-  <URI>https://www.google.com/a/example.com/o8/ud?be=o8</URI>
-  </Service>
-  </XRD>
-</xrds:XRDS>}})
-    }
 );
 
 $Mock_ua->mock(get => sub {
@@ -100,7 +92,61 @@ is($auth_url, 'https://www.google.com/a/example.com/o8/ud'
     . '&openid.ns=http://specs.openid.net/auth/2.0'
     . '&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select'
     . '&openid.identity=http://specs.openid.net/auth/2.0/identifier_select'
-    . '&openid.return_to=http://example.com/return', 'Generated correct authentication URL');
+    . '&openid.return_to=http://example.com/return'
+    . '&openid.ns.other=http://example.com/some_schema'
+        . '&openid.other.argument=value'
+    . '&openid.ns.ax=http://openid.net/srv/ax/1.0'
+        . '&openid.ax.mode=fetch_request'
+        . '&openid.ax.required=email'
+        . '&openid.ax.type.email=http://axschema.org/contact/email'
+    , 'Generated correct authentication URL');
+
+$fl->get_extension('http://openid.net/srv/ax/1.0')->set_parameter('type.country' => 'http://axschema.org/contact/country/home');
+$fl->get_extension('http://openid.net/srv/ax/1.0')->set_parameter('required' => 'country,email');
+
+$auth_url = $fl->get_auth_url();
+is($auth_url, 'https://www.google.com/a/example.com/o8/ud'
+    . '?be=o8'
+    . '&openid.mode=checkid_setup'
+    . '&openid.ns=http://specs.openid.net/auth/2.0'
+    . '&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select'
+    . '&openid.identity=http://specs.openid.net/auth/2.0/identifier_select'
+    . '&openid.return_to=http://example.com/return'
+    . '&openid.ns.other=http://example.com/some_schema'
+        . '&openid.other.argument=value'
+    . '&openid.ns.ax=http://openid.net/srv/ax/1.0'
+        . '&openid.ax.mode=fetch_request'
+        . '&openid.ax.required=country,email'
+        . '&openid.ax.type.country=http://axschema.org/contact/country/home'
+        . '&openid.ax.type.email=http://axschema.org/contact/email'
+    , 'Generated correct authentication URL after simple param addition');
+
+$fl->get_extension('http://openid.net/srv/ax/1.0')->set_parameter(
+    type        => {
+        firstname   => 'http://axschema.org/namePerson/first',
+        lastname    => 'http://axschema.org/namePerson/last',
+    },
+    required    => 'country,email,firstname,lastname'
+);
+
+$auth_url = $fl->get_auth_url();
+is($auth_url, 'https://www.google.com/a/example.com/o8/ud'
+    . '?be=o8'
+    . '&openid.mode=checkid_setup'
+    . '&openid.ns=http://specs.openid.net/auth/2.0'
+    . '&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select'
+    . '&openid.identity=http://specs.openid.net/auth/2.0/identifier_select'
+    . '&openid.return_to=http://example.com/return'
+    . '&openid.ns.other=http://example.com/some_schema'
+        . '&openid.other.argument=value'
+    . '&openid.ns.ax=http://openid.net/srv/ax/1.0'
+        . '&openid.ax.mode=fetch_request'
+        . '&openid.ax.required=country,email,firstname,lastname'
+        . '&openid.ax.type.country=http://axschema.org/contact/country/home'
+        . '&openid.ax.type.email=http://axschema.org/contact/email'
+        . '&openid.ax.type.firstname=http://axschema.org/namePerson/first'
+        . '&openid.ax.type.lastname=http://axschema.org/namePerson/last'
+    , 'Generated correct authentication URL after nested param addition');
 
 my $returned_params = 'openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0'
     . '&openid.mode=id_res'
@@ -109,21 +155,23 @@ my $returned_params = 'openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0'
     . '&openid.return_to=http%3A%2F%2Fexample.com%2Freturn'
     . '&openid.assoc_handle=AOQobUepGOowYCBgCtqpD6LzIOGUpcqNSVTN-eRylmOPNw6SgiZyo0hH'
     . '&openid.signed=op_endpoint%2Cclaimed_id%2Cidentity%2Creturn_to%2Cresponse_nonce%2Cassoc_handle'
+        . '%2Cns.ext1%2Cext1.mode%2Cext1.type.firstname%2Cext1.value.firstname%2Cext1.type.email%2Cext1.value.email%2Cext1.type.lastname%2Cext1.value.lastname'
     . '&openid.sig=sRBcGKb1zj5CAxGOE%2FY7R8%2Bb9G8%3D'
     . '&openid.identity=http%3A%2F%2Fexample.com%2Fopenid%3Fid%3D108441225163454056756'
-    . '&openid.claimed_id=http%3A%2F%2Fexample.com%2Fopenid%3Fid%3D108441225163454056756';
+    . '&openid.claimed_id=http%3A%2F%2Fexample.com%2Fopenid%3Fid%3D108441225163454056756'
+    . '&openid.ns.ext1=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0'
+        . '&openid.ext1.mode=fetch_response'
+        . '&openid.ext1.type.firstname=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst'
+        . '&openid.ext1.value.firstname=Some'
+        . '&openid.ext1.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail'
+        . '&openid.ext1.value.email=somebody%40example.com'
+        . '&openid.ext1.type.lastname=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast'
+        . '&openid.ext1.value.lastname=Body';
+
 my $cgi = CGI->new($returned_params);
 my $auth_fl = Net::Google::FederatedLogin->new(cgi => $cgi, return_to => 'http://example.com/return');
+my $extension = $auth_fl->get_extension('http://openid.net/srv/ax/1.0');
 
-$auth_fl->claimed_id('http://example.com/openid?id=108441225163454056756');
-is($auth_fl->get_openid_endpoint, 'https://www.google.com/a/example.com/o8/ud?be=o8');
-my $check_params = $returned_params;
-$check_params =~ s/openid\.mode=id_res/openid.mode=check_authentication/;
-
-$update_mock_response{'https://www.google.com/a/example.com/o8/ud?be=o8&' . $check_params} = sub {
-    $Mock_response->mock(decoded_content => sub {
-        return qq{is_valid:true\nns:http://specs.openid.net/auth/2.0}
-    })
-};
-
-is($auth_fl->verify_auth(), 'http://example.com/openid?id=108441225163454056756', 'OpenID validated');
+is($extension->get_parameter('value.firstname'), 'Some');
+is($extension->get_parameter('value.lastname'), 'Body');
+is($extension->get_parameter('value.email'), 'somebody@example.com');

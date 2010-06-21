@@ -28,10 +28,11 @@ my %WriteMakefileArgs = (
     'LWP::UserAgent' => '0',
     'Moose' => '0',
     'Moose::Role' => '0',
+    'Moose::Util::TypeConstraints' => '0',
     'URI::Escape' => '0',
     'XML::Twig' => '0'
   },
-  'VERSION' => '0.4.0',
+  'VERSION' => '0.5.0',
   'test' => {
     'TESTS' => 't/*.t'
   }
