@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.5.1';
+  $Net::Google::FederatedLogin::VERSION = '0.5.2';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -226,7 +226,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.5.1
+version 0.5.2
 
 =head1 ATTRIBUTES
 

@@ -25,4 +25,4 @@ requires:
   XML::Twig: 0
 resources:
   repository: http://github.com/cebjyre/Net-Google-FederatedLogin
-version: 0.5.1
+version: 0.5.2
