@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Gmail::Discoverer;
 BEGIN {
-  $Net::Google::FederatedLogin::Gmail::Discoverer::VERSION = '0.5.2';
+  $Net::Google::FederatedLogin::Gmail::Discoverer::VERSION = '0.5.3';
 }
 # ABSTRACT: Find the OpenID endpoint for standard gmail accounts
 
@@ -42,7 +42,7 @@ Net::Google::FederatedLogin::Gmail::Discoverer - Find the OpenID endpoint for st
 
 =head1 VERSION
 
-version 0.5.2
+version 0.5.3
 
 =head1 METHODS
 

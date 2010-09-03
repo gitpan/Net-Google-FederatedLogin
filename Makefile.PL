@@ -26,13 +26,13 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Carp' => '0',
     'LWP::UserAgent' => '0',
-    'Moose' => '0',
+    'Moose' => '0.51',
     'Moose::Role' => '0',
     'Moose::Util::TypeConstraints' => '0',
     'URI::Escape' => '0',
     'XML::Twig' => '0'
   },
-  'VERSION' => '0.5.2',
+  'VERSION' => '0.5.3',
   'test' => {
     'TESTS' => 't/*.t'
   }

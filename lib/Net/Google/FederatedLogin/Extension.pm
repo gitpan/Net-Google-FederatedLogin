@@ -1,10 +1,10 @@
 package Net::Google::FederatedLogin::Extension;
 BEGIN {
-  $Net::Google::FederatedLogin::Extension::VERSION = '0.5.2';
+  $Net::Google::FederatedLogin::Extension::VERSION = '0.5.3';
 }
 # ABSTRACT: Storage and methods for OpenID extensions, both requesting information and receiving data.
 
-use Moose;
+use Moose 0.51;
 
 
 has ns          => (
@@ -159,7 +159,7 @@ Net::Google::FederatedLogin::Extension - Storage and methods for OpenID extensio
 
 =head1 VERSION
 
-version 0.5.2
+version 0.5.3
 
 =head1 ATTRIBUTES
 

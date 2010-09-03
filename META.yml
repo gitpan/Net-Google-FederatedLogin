@@ -9,7 +9,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.101612, CPAN::Meta::Converter version 2.101670'
+generated_by: 'Dist::Zilla version 4.102340, CPAN::Meta::Converter version 2.102400'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -18,11 +18,11 @@ name: Net-Google-FederatedLogin
 requires:
   Carp: 0
   LWP::UserAgent: 0
-  Moose: 0
+  Moose: 0.51
   Moose::Role: 0
   Moose::Util::TypeConstraints: 0
   URI::Escape: 0
   XML::Twig: 0
 resources:
   repository: http://github.com/cebjyre/Net-Google-FederatedLogin
-version: 0.5.2
+version: 0.5.3
