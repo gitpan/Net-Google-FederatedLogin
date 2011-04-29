@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Gmail::Discoverer;
 BEGIN {
-  $Net::Google::FederatedLogin::Gmail::Discoverer::VERSION = '0.5.3';
+  $Net::Google::FederatedLogin::Gmail::Discoverer::VERSION = '0.6.0';
 }
 # ABSTRACT: Find the OpenID endpoint for standard gmail accounts
 
@@ -42,7 +42,7 @@ Net::Google::FederatedLogin::Gmail::Discoverer - Find the OpenID endpoint for st
 
 =head1 VERSION
 
-version 0.5.3
+version 0.6.0
 
 =head1 METHODS
 
@@ -56,7 +56,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Glenn Fowler.
+This software is copyright (c) 2011 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

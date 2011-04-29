@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Extension;
 BEGIN {
-  $Net::Google::FederatedLogin::Extension::VERSION = '0.5.3';
+  $Net::Google::FederatedLogin::Extension::VERSION = '0.6.0';
 }
 # ABSTRACT: Storage and methods for OpenID extensions, both requesting information and receiving data.
 
@@ -79,7 +79,8 @@ sub _extract_attributes_by_ns {
     
     my $prefix = "openid.$ns.";
     my $prefix_len = length($prefix);
-    my %attributes = (map {substr($_, $prefix_len) => scalar $cgi->param($_)} grep {/^\Q$prefix\E/} $cgi->param());
+    my %signed_params = map {("openid.$_" => 1)} split /,/, $cgi->param('openid.signed');
+    my %attributes = (map {substr($_, $prefix_len) => scalar $cgi->param($_)} grep {/^\Q$prefix\E/ and $signed_params{$_}} $cgi->param());
     $args->{attributes} = \%attributes;
     
     return $args;
@@ -112,6 +113,7 @@ sub get_parameter {
     my $self = shift;
     my $param = shift;
     
+    die "$param is not an available parameter" unless exists $self->attributes->{$param};
     return $self->attributes->{$param};
 }
 
@@ -159,7 +161,7 @@ Net::Google::FederatedLogin::Extension - Storage and methods for OpenID extensio
 
 =head1 VERSION
 
-version 0.5.3
+version 0.6.0
 
 =head1 ATTRIBUTES
 
@@ -207,7 +209,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Glenn Fowler.
+This software is copyright (c) 2011 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

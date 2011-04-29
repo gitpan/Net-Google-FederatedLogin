@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
 BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.5.3';
+  $Net::Google::FederatedLogin::VERSION = '0.6.0';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -226,7 +226,26 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.5.3
+version 0.6.0
+
+=head1 SYNOPSIS
+
+Sending user to be authenticated:
+
+  my $claimed = 'example@gmail.com';
+  # or, where example.com is a Google Apps domain
+  # 'example.com' (bare domain)
+  # or 'user@example.com' (email address)
+  # or 'http://example.com/openid?id=[id]' (already known id)
+  
+  my $g = Net::Google::FederatedLogin->new(claimed_id => $claimed, return_to => 'https://example.com/auth');
+  my $auth_url = $g->get_auth_url();
+
+Verifying the user was correctly authenticated:
+
+  my $g = Net::Google::FederatedLogin->new(cgi => $cgi, return_to => 'https://example.com/auth');
+  my $id = $g->verify_auth();
+  # $id is the verified identity, or false if it wasn't verified (eg by the user handcrafting the url, or disallowing access)
 
 =head1 ATTRIBUTES
 
@@ -293,7 +312,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Glenn Fowler.
+This software is copyright (c) 2011 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
