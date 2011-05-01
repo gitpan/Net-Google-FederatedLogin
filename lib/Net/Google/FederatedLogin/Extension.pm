@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Extension;
 BEGIN {
-  $Net::Google::FederatedLogin::Extension::VERSION = '0.6.0';
+  $Net::Google::FederatedLogin::Extension::VERSION = '0.7.0';
 }
 # ABSTRACT: Storage and methods for OpenID extensions, both requesting information and receiving data.
 
@@ -38,7 +38,7 @@ around BUILDARGS => sub {
     } else {
         $args = {@_};
     }
-    if($args->{cgi}) {
+    if($args->{cgi} or $args->{cgi_params}) {
         my $new_args;
         if($args->{uri}) {
             $new_args = _extract_attributes_by_uri($args);
@@ -57,10 +57,11 @@ sub _extract_attributes_by_uri {
     my $args = shift;
     
     my $cgi = $args->{cgi};
+    my $cgi_params = $args->{cgi_params};
     my $uri = $args->{uri};
     
-    my @openid_params = grep {/^openid\./} $cgi->param();
-    (my $ns_param) = grep {$cgi->param($_) eq $uri} grep {/^openid\.ns\./} @openid_params;
+    my @openid_params = grep {/^openid\./} $cgi ? $cgi->param() : keys %$cgi_params;
+    (my $ns_param) = grep {($cgi ? $cgi->param($_) : $cgi_params->{$_}) eq $uri} grep {/^openid\.ns\./} @openid_params;
     if($ns_param) {
         $args->{ns} = substr($ns_param, 10);
         return _extract_attributes_by_ns($args);
@@ -73,14 +74,21 @@ sub _extract_attributes_by_ns {
     my $args = shift;
     
     my $cgi = $args->{cgi};
+    my $cgi_params = $args->{cgi_params};
     my $ns = $args->{ns};
     
-    $args->{uri} ||= $cgi->param("openid.ns.$ns");
+    $args->{uri} ||= $cgi ? $cgi->param("openid.ns.$ns") : $cgi_params->{"openid.ns.$ns"};
     
     my $prefix = "openid.$ns.";
     my $prefix_len = length($prefix);
-    my %signed_params = map {("openid.$_" => 1)} split /,/, $cgi->param('openid.signed');
-    my %attributes = (map {substr($_, $prefix_len) => scalar $cgi->param($_)} grep {/^\Q$prefix\E/ and $signed_params{$_}} $cgi->param());
+    my %attributes;
+    if($cgi) {
+        my %signed_params = map {("openid.$_" => 1)} split /,/, $cgi->param('openid.signed');
+        %attributes = (map {substr($_, $prefix_len) => scalar $cgi->param($_)} grep {/^\Q$prefix\E/ and $signed_params{$_}} $cgi->param());
+    } else {
+        my %signed_params = map {("openid.$_" => 1)} split /,/, $cgi_params->{'openid.signed'};
+        %attributes = (map {substr($_, $prefix_len) => $cgi_params->{$_}} grep {/^\Q$prefix\E/ and $signed_params{$_}} keys %$cgi_params);
+    }
     $args->{attributes} = \%attributes;
     
     return $args;
@@ -161,7 +169,7 @@ Net::Google::FederatedLogin::Extension - Storage and methods for OpenID extensio
 
 =head1 VERSION
 
-version 0.6.0
+version 0.7.0
 
 =head1 ATTRIBUTES
 

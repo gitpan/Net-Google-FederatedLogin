@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Apps::Discoverer;
 BEGIN {
-  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.6.0';
+  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.7.0';
 }
 # ABSTRACT: Find the OpenID endpoint for apps domain accounts
 
@@ -80,7 +80,7 @@ sub _get_user_discovery_url {
     my $self = shift;
     
     my $claimed_id = $self->claimed_id;
-    my $escaped_id = uri_escape($claimed_id);
+    my $escaped_id = uri_escape_utf8($claimed_id);
     
     my $intermediate_url = $self->_get_idp_discovery_url;
     
@@ -113,7 +113,7 @@ Net::Google::FederatedLogin::Apps::Discoverer - Find the OpenID endpoint for app
 
 =head1 VERSION
 
-version 0.6.0
+version 0.7.0
 
 =head1 METHODS
 

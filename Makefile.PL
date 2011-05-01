@@ -4,7 +4,7 @@ use warnings;
 
 
 
-use ExtUtils::MakeMaker 6.31;
+use ExtUtils::MakeMaker 6.30;
 
 
 
@@ -17,7 +17,7 @@ my %WriteMakefileArgs = (
     'Test::More' => '0'
   },
   'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.31'
+    'ExtUtils::MakeMaker' => '6.30'
   },
   'DISTNAME' => 'Net-Google-FederatedLogin',
   'EXE_FILES' => [],
@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
     'URI::Escape' => '0',
     'XML::Twig' => '0'
   },
-  'VERSION' => '0.6.0',
+  'VERSION' => '0.7.0',
   'test' => {
     'TESTS' => 't/*.t'
   }

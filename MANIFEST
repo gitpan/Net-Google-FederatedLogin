@@ -15,5 +15,6 @@ t/attributes.t
 t/create.t
 t/gmail.t
 t/hosted.t
+t/non_cgi.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t
