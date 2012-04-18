@@ -9,32 +9,32 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html',
-  'AUTHOR' => 'Glenn Fowler <cebjyre@cpan.org>',
-  'BUILD_REQUIRES' => {
-    'CGI' => '0',
-    'Test::Mock::LWP' => '0',
-    'Test::More' => '0'
+  "ABSTRACT" => "Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html",
+  "AUTHOR" => "Glenn Fowler <cebjyre\@cpan.org>",
+  "BUILD_REQUIRES" => {
+    "CGI" => 0,
+    "Test::Mock::LWP" => 0,
+    "Test::More" => 0
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.30'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'Net-Google-FederatedLogin',
-  'EXE_FILES' => [],
-  'LICENSE' => 'perl',
-  'NAME' => 'Net::Google::FederatedLogin',
-  'PREREQ_PM' => {
-    'Carp' => '0',
-    'LWP::UserAgent' => '0',
-    'Moose' => '0.51',
-    'Moose::Role' => '0',
-    'Moose::Util::TypeConstraints' => '0',
-    'URI::Escape' => '0',
-    'XML::Twig' => '0'
+  "DISTNAME" => "Net-Google-FederatedLogin",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "Net::Google::FederatedLogin",
+  "PREREQ_PM" => {
+    "Carp" => 0,
+    "LWP::UserAgent" => 0,
+    "Moose" => "0.51",
+    "Moose::Role" => 0,
+    "Moose::Util::TypeConstraints" => 0,
+    "URI::Escape" => 0,
+    "XML::Twig" => 0
   },
-  'VERSION' => '0.7.0',
-  'test' => {
-    'TESTS' => 't/*.t'
+  "VERSION" => "0.7.1",
+  "test" => {
+    "TESTS" => "t/*.t"
   }
 );
 

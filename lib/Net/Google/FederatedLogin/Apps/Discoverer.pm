@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Apps::Discoverer;
-BEGIN {
-  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.7.0';
+{
+  $Net::Google::FederatedLogin::Apps::Discoverer::VERSION = '0.7.1';
 }
 # ABSTRACT: Find the OpenID endpoint for apps domain accounts
 
@@ -113,7 +113,7 @@ Net::Google::FederatedLogin::Apps::Discoverer - Find the OpenID endpoint for app
 
 =head1 VERSION
 
-version 0.7.0
+version 0.7.1
 
 =head1 METHODS
 
@@ -129,7 +129,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Glenn Fowler.
+This software is copyright (c) 2012 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Role::Discoverer;
-BEGIN {
-  $Net::Google::FederatedLogin::Role::Discoverer::VERSION = '0.7.0';
+{
+  $Net::Google::FederatedLogin::Role::Discoverer::VERSION = '0.7.1';
 }
 # ABSTRACT: something that can find the OpenID endpoint
 
@@ -26,7 +26,7 @@ Net::Google::FederatedLogin::Role::Discoverer - something that can find the Open
 
 =head1 VERSION
 
-version 0.7.0
+version 0.7.1
 
 =head1 AUTHOR
 
@@ -34,7 +34,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Glenn Fowler.
+This software is copyright (c) 2012 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

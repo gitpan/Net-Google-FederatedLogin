@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin;
-BEGIN {
-  $Net::Google::FederatedLogin::VERSION = '0.7.0';
+{
+  $Net::Google::FederatedLogin::VERSION = '0.7.1';
 }
 # ABSTRACT: Google Federated Login module - see http://code.google.com/apis/accounts/docs/OpenID.html
 
@@ -262,7 +262,7 @@ Net::Google::FederatedLogin - Google Federated Login module - see http://code.go
 
 =head1 VERSION
 
-version 0.7.0
+version 0.7.1
 
 =head1 SYNOPSIS
 
@@ -354,7 +354,7 @@ Glenn Fowler <cebjyre@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Glenn Fowler.
+This software is copyright (c) 2012 by Glenn Fowler.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
