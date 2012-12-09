@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Types;
 {
-  $Net::Google::FederatedLogin::Types::VERSION = '0.7.1';
+  $Net::Google::FederatedLogin::Types::VERSION = '0.7.2';
 }
 # ABSTRACT: Types for Net-Google-FederatedLogin.
 
@@ -26,7 +26,7 @@ Net::Google::FederatedLogin::Types - Types for Net-Google-FederatedLogin.
 
 =head1 VERSION
 
-version 0.7.1
+version 0.7.2
 
 =head1 AUTHOR
 

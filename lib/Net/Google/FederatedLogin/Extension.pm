@@ -1,6 +1,6 @@
 package Net::Google::FederatedLogin::Extension;
 {
-  $Net::Google::FederatedLogin::Extension::VERSION = '0.7.1';
+  $Net::Google::FederatedLogin::Extension::VERSION = '0.7.2';
 }
 # ABSTRACT: Storage and methods for OpenID extensions, both requesting information and receiving data.
 
@@ -169,7 +169,7 @@ Net::Google::FederatedLogin::Extension - Storage and methods for OpenID extensio
 
 =head1 VERSION
 
-version 0.7.1
+version 0.7.2
 
 =head1 ATTRIBUTES
 
